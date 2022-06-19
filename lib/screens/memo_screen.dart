@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MemoScreen extends StatefulWidget {
   const MemoScreen({Key? key}) : super(key: key);
@@ -11,12 +12,37 @@ class _MemoScreenState extends State<MemoScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController memoController = TextEditingController();
 
-  void _updateTitle() {
-    print('Update title');
+  @override
+  void initState() {
+    super.initState();
+    _loadTitle();
+    _loadMemo();
   }
 
-  void _updateMemo() {
-    print('Update memo');
+  void _loadTitle() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      titleController.text = prefs.getString('title') ?? '';
+    });
+  }
+
+  void _loadMemo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    memoController.text = prefs.getString('memo') ?? '';
+  }
+
+  void _updateTitle() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setString('title', titleController.text);
+    });
+  }
+
+  void _updateMemo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setString('memo', memoController.text);
+    });
   }
 
   @override
